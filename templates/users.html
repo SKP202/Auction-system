@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #333333;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #333333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registered Users</h1>
+    <table>
+        <tr>
+            <th>Username</th>
+            <th>Role</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

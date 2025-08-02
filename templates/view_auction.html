@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Auction</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .auction-details {
+            background-color: #ffffff;
+            border: 1px solid #333333;
+            border-radius: 10px;
+            width: 50%;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-top: 20px;
+        }
+        .auction-details img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .auction-details h3 {
+            margin: 10px 0;
+        }
+        .auction-details p {
+            margin: 5px 0;
+        }
+        .auction-details .timer {
+            font-size: 18px;
+            color: red;
+        }
+        .bidding-history {
+            margin-top: 20px;
+            width: 50%;
+        }
+        .bidding-history table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .bidding-history th, .bidding-history td {
+            border: 1px solid #333333;
+            padding: 8px;
+            text-align: left;
+        }
+        .bidding-history th {
+            background-color: #333333;
+            color: white;
+        }
+        .bid-form {
+            margin-top: 20px;
+        }
+        .bid-form input, .bid-form button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #333333;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #333333;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .balance-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .balance-container h3 {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="auction-details">
+        <img src="/{{ auction.image }}" alt="Auction Image">
+        <h3>{{ auction.description }}</h3>
+        <p>Current Bid:
+            {% if auction.bids|length > 0 %}
+                {{ auction.bids[-1].amount }}
+            {% else %}
+                {{ auction.starting_price }}
+            {% endif %}
+        </p>
+        <p class="timer" data-end-date="{{ auction.end_date }}"></p>
+    </div>
+    <div class="bidding-history">
+        <h3>Bidding History</h3>
+        <table>
+            <tr>
+                <th>Bid Amount</th>
+                <th>Bid Time</th>
+                <th>Username</th>
+            </tr>
+            {% for bid in auction.bids %}
+            <tr>
+                <td>{{ bid.amount }}</td>
+                <td>{{ bid.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ bid.user.username }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="bid-form">
+        <div class="balance-container">
+            <h3>Your Balance: $<span id="balance">{{ balance }}</span></h3>
+        </div>
+        <form action="/view_auction/{{ auction.id }}" method="post">
+            <label for="bid_amount">Your Bid:</label>
+            <input type="number" id="bid_amount" name="bid_amount" step="0.01" min="0" required>
+            <button type="submit">Place Bid</button>
+        </form>
+    </div>
+    <button class="back-button" onclick="location.href='/buyer'">Back</button>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const timer = document.querySelector('.timer');
+        const endDate = new Date(timer.getAttribute('data-end-date')).getTime();
+        const updateTimer = () => {
+            const now = new Date().getTime();
+            const distance = endDate - now;
+            if (distance < 0) {
+                timer.innerHTML = "Auction ended";
+                const bidForm = document.querySelector('.bid-form');
+                if (bidForm) {
+                    bidForm.style.display = 'none';
+                }
+                return;
+            }
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            timer.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        };
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    });
+</script>
+</body>
+</html>

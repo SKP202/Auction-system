@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to the Auction System</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            animation: fadeIn 2s;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #333333;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
+        .button-container button:nth-of-type(1) {
+            animation-delay: 2s;
+        }
+        .button-container button:nth-of-type(2) {
+            animation-delay: 2.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Auction System</h1>
+    <div class="button-container">
+        <button onclick="location.href='/login'">Log in</button>
+        <button onclick="location.href='/register'">Register</button>
+    </div>
+</body>
+</html>
